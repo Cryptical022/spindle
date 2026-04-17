@@ -14,7 +14,7 @@
 
     <header class="dimmed" id="header">
         <span class="logo">Spindle</span>
-        <button class="settings-button" onclick="document.getElementById('settingsBackdrop').classList.add('open')" id="settingsButton" title="Open Settings"><i class="bi bi-gear"></i></button>
+        <button class="settings-button" onclick="openSettings()" id="settingsButton" title="Open Settings"><i class="bi bi-gear"></i></button>
 
         <div class="header-divider" id="hdrDivider" style="display: none;"></div>
         <div class="proj-name-wrap" id="projNameWrap" style="display: none;">
@@ -70,7 +70,7 @@
                         <div class="hc-title">Open Project</div>
                         <div class="hc-sub">Open a previous project</div>
                     </div>
-                    <div class="home-card" onclick="document.getElementById('settingsBackdrop').classList.add('open')">
+                    <div class="home-card" onclick="openSettings()">
                         <i class="bi bi-gear"></i>
                         <div class="hc-title">Open Settings</div>
                         <div class="hc-sub">Configure your Spindle experience</div>
@@ -275,7 +275,7 @@
 
             <div class="settings-footer">
                 <button class="settings-btn cancel" id="settingsCancel" onclick="closeSettings()">Cancel</button>
-                <button class="settings-btn apply" id="settingsApply">Apply</button>
+                <button class="settings-btn apply" id="settingsApply" onclick="applySettings()">Apply</button>
             </div>
         </div>
     </div>

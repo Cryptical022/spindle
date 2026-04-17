@@ -38,6 +38,47 @@ function projKey(id) { return 'spindle_proj_' + id; }
 function getIndex() { try { return JSON.parse(localStorage.getItem(IDX_KEY)) || []; } catch { return []; } }
 function setIndex(idx) { localStorage.setItem(IDX_KEY, JSON.stringify(idx)); }
 
+let settingsSnapshot = null
+
+function openSettings() {
+    settingsSnapshot = structuredClone(userSettings);
+    document.getElementById('settingsBackdrop').classList.add("open");
+}
+
+function closeSettings() {
+    if (settingsSnapshot) {
+        userSettings = structuredClone(settingsSnapshot);
+        settingsSnapshot = null;
+    }
+    document.getElementById('settingsBackdrop').classList.remove('open');
+}
+
+function applySettingsToUI() {
+    syncSettingsControls();
+}
+
+function syncSettingsControls() {
+    document.querySelectorAll('.setting-card[data-theme]').forEach(card => {
+        card.classList.toggle('active', card.dataset.theme.toLowerCase() === userSettings.Appearance.Theme.toLowerCase());
+    });
+
+    document.querySelectorAll('.swatch[data-accent]').forEach(swatch => {
+        swatch.classList.toggle('active', swatch.dataset.accent === userSettings.Appearance.Appearance.Accent);
+    });
+
+    const autoSave = document.getElementById('autoSaveToggle');
+    autoSave.classList.toggle('on', userSettings.Behaviour.Autosave === "On");
+    autoSave.classList.toggle('off', userSettings.Behaviour.Autosave !== "On");
+    
+    const shortcuts = document.getElementById('autoSaveToggle');
+    shortcuts.classList.toggle('on', userSettings.Behaviour.Autosave === "On");
+    shortcuts.classList.toggle('off', userSettings.Behaviour.Autosave !== "On");
+
+    const slider = document.getElementById('durationSlider');
+    slider.value = userSettings.Behaviour.WheelDuration;
+    document.getElementById('spinDurationValue').textContent = userSettings.Behaviour.WheelDuration + ' sec';
+}
+
 function getSettings() {
     try {
         const parsed = JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -49,8 +90,12 @@ function getSettings() {
 
 function loadSettings() { userSettings = getSettings(); reconcileSettings(); applySettings(); }
 
+
+
 function applySettings() {
-    
+    saveSettings();
+    settingsSnapshot = null;
+    document.getElementById('settingsBackdrop').classList.remove('open');
 }
 
 function reconcileSettings() {
@@ -570,7 +615,7 @@ function spinWheel() {
     const opts = wheel.options.filter(o => o.enabled);
     if (opts.length === 0) return;
 
-    const duration = 5000;
+    const duration = userSettings.Behaviour.WheelDuration * 1000 || 5000;
     isSpinning = true;
 
     const btn = document.getElementById("spinBtn");
@@ -882,11 +927,6 @@ function markDirty(state) {
     }
 }
 
-function closeSettings() {
-    const settingsBackdrop = document.getElementById("settingsBackdrop")
-    settingsBackdrop.classList.remove('open')
-}
-
 // ═══════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════
@@ -1013,6 +1053,7 @@ const slider = document.getElementById('durationSlider')
 const value = document.getElementById("spinDurationValue")
 document.getElementById('durationSlider').addEventListener('input', ev => {
     document.getElementById("spinDurationValue").textContent = slider.value + " sec";
+    userSettings.Behaviour.WheelDuration = slider.value;
 })
 
 // ═══════════════════════════════════════════════════
