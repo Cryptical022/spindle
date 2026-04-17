@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="icon" href="favicon.png">
 </head>
 <body>
 
@@ -164,7 +165,7 @@
                     <p>Customise how Spindle looks and behaves.</p>
                 </div>
 
-                <button class="close-btn" onclick="document.getElementById('settingsBackdrop').classList.remove('open')">
+                <button class="close-btn" onclick="closeSettings()">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -174,13 +175,13 @@
                     <div class="section-title">Appearance</div>
 
                     <div class="setting-grid">
-                        <button class="setting-card active" data-theme="dark">
+                        <button class="setting-card active" id="darkMode" data-theme="dark">
                             <i class="bi bi-moon-stars"></i>
                             <span>Dark</span>
                             <small>Default theme</small>
                         </button>
 
-                        <button class="setting-card">
+                        <button class="setting-card" id="lightMode" data-theme="light">
                             <i class="bi bi-sun"></i>
                             <span>Light</span>
                             <small>Brighter UI</small>
@@ -192,11 +193,11 @@
                     <div class="section-title">Accent Colour</div>
 
                     <div class="swatch-row">
-                        <button class="swatch active" data-accent="#7c5cfc" style="--swatch:#7c5cfc"></button>
-                        <button class="swatch" data-accent="#f0b429" style="--swatch:#f0b429"></button>
-                        <button class="swatch" data-accent="#34de99" style="--swatch:#34d399"></button>
-                        <button class="swatch" data-accent="#f87171" style="--swatch:#f87171"></button>
-                        <button class="swatch" data-accent="#38bdf8" style="--swatch:#38bdf8"></button>
+                        <button class="swatch active" id="swatchPurple" data-accent="#7c5cfc" style="--swatch:#7c5cfc"></button>
+                        <button class="swatch" id="swatchYellow" data-accent="#f0b429" style="--swatch:#f0b429"></button>
+                        <button class="swatch" id="swatchGreen" data-accent="#34de99" style="--swatch:#34d399"></button>
+                        <button class="swatch" id="swatchRed" data-accent="#f87171" style="--swatch:#f87171"></button>
+                        <button class="swatch" id="swatchBlue" data-accent="#38bdf8" style="--swatch:#38bdf8"></button>
                     </div>
                 </section>
 
@@ -217,6 +218,17 @@
                             <div class="row-sub">Display keyboard shortcuts</div>
                         </div>
                         <button class="toggle off" id="shortcutsToggle"></button>
+                    </label>
+
+                    <label class="setting-row">
+                        <div>
+                            <div class="row-title">Wheel spin duration</div>
+                            <div class="row-sub">How long the wheel will spin for</div>
+                        </div>
+                        <div class="settings-slider-wrap">
+                            <input type="range" min="1" max="15" value="5" id="durationSlider">
+                            <div class="slider-value" id="spinDurationValue">5 sec</div>
+                        </div>
                     </label>
                 </section>
 
@@ -253,12 +265,17 @@
                         <div class="about-divider"></div>
 
                         <div class="about-actions">
-                            <button class="about-btn"><i class="bi bi-github"></i><span>Github</span></button>
+                            <button class="about-btn" onclick="window.open('https://github.com/cryptical022/spindle')"><i class="bi bi-github"></i><span>Github</span></button>
                             <button class="about-btn"><i class="bi bi-bug"></i><span>Report Bug</span></button>
                             <button class="about-btn"><i class="bi bi-lightbulb"></i>Suggestions</button>
                         </div>
                     </div>
                 </section>
+            </div>
+
+            <div class="settings-footer">
+                <button class="settings-btn cancel" id="settingsCancel" onclick="closeSettings()">Cancel</button>
+                <button class="settings-btn apply" id="settingsApply">Apply</button>
             </div>
         </div>
     </div>

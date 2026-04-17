@@ -29,6 +29,7 @@ const DEFAULT_SETTINGS = {
     Behaviour: {
         Autosave: "On",
         Shortcuts: "On",
+        WheelDuration: 5,
     }
 }
 
@@ -37,13 +38,42 @@ function projKey(id) { return 'spindle_proj_' + id; }
 function getIndex() { try { return JSON.parse(localStorage.getItem(IDX_KEY)) || []; } catch { return []; } }
 function setIndex(idx) { localStorage.setItem(IDX_KEY, JSON.stringify(idx)); }
 
-function getSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || DEFAULT_SETTINGS; } catch { return DEFAULT_SETTINGS; } }
+function getSettings() {
+    try {
+        const parsed = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        return parsed ? structuredClone(parsed) : structuredClone(DEFAULT_SETTINGS);
+    } catch {
+        return structuredClone(DEFAULT_SETTINGS);
+    }
+}
 
-function loadSettings() { userSettings = getSettings(); applySettings(); }
+function loadSettings() { userSettings = getSettings(); reconcileSettings(); applySettings(); }
 
 function applySettings() {
     
 }
+
+function reconcileSettings() {
+    if (!userSettings || typeof userSettings !== "object") {
+        userSettings = {};
+    }
+
+    Object.keys(DEFAULT_SETTINGS).forEach(category => {
+        if (!userSettings[category] || typeof userSettings[category] !== "object") {
+            userSettings[category] = {};
+        }
+
+        Object.keys(DEFAULT_SETTINGS[category]).forEach(setting => {
+            if (userSettings[category][setting] === undefined) {
+                userSettings[category][setting] = DEFAULT_SETTINGS[category][setting];
+            }
+        });
+    });
+
+    saveSettings();
+}
+
+function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(userSettings)); }
 
 function loadProject(id) {
     try {
@@ -432,6 +462,7 @@ function selectWheel(id) {
     markDirty(true);
     renderTree();
     renderOptionsPanel();
+    currentRotation = 0;
     drawWheel();
     showState('wheel');
 }
@@ -849,6 +880,11 @@ function markDirty(state) {
     }
 }
 
+function closeSettings() {
+    const settingsBackdrop = document.getElementById("settingsBackdrop")
+    settingsBackdrop.classList.remove('open')
+}
+
 // ═══════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════
@@ -969,6 +1005,12 @@ window.addEventListener("keydown", ev => {
             showOpenProjectModal();
         }
     }
+})
+
+const slider = document.getElementById('durationSlider')
+const value = document.getElementById("spinDurationValue")
+document.getElementById('durationSlider').addEventListener('input', ev => {
+    document.getElementById("spinDurationValue").textContent = slider.value + " sec";
 })
 
 // ═══════════════════════════════════════════════════
